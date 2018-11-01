@@ -5,21 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.view.View;
 
-public class SnapPagerScrollListener extends RecyclerView.OnScrollListener {
+public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListener {
+
+    public int currentPosition = RecyclerView.NO_POSITION;
 
     private final SnapHelper mSnapHelper;
-    private int currentPosition = RecyclerView.NO_POSITION;
 
-    public SnapPagerScrollListener(SnapHelper snapHelper) {
+    public SnapPageScrollListener(SnapHelper snapHelper) {
         mSnapHelper = snapHelper;
-    }
-
-    public int getCurrentPosition() {
-        return currentPosition;
-    }
-
-    public void setCurrentPosition(int currentPosition) {
-        this.currentPosition = currentPosition;
     }
 
     @Override public final void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {

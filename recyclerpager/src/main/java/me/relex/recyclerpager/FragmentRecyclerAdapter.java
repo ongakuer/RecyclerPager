@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 public abstract class FragmentRecyclerAdapter
-        extends PagerRecyclerAdapter<FragmentRecyclerAdapter.FragmentViewHolder> {
+        extends PageRecyclerAdapter<FragmentRecyclerAdapter.FragmentViewHolder> {
 
     private final int mBaseContainerId;
     private final FragmentManager mFragmentManager;

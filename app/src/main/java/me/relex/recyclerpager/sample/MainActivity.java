@@ -7,8 +7,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import me.relex.recyclerpager.FragmentRecyclerAdapter;
+import me.relex.recyclerpager.SnapPageScrollListener;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,6 +27,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+
+        recyclerView.addOnScrollListener(new SnapPageScrollListener(snapHelper) {
+            @Override public void onPageScrolled(int position, float positionOffset,
+                    int positionOffsetPixels) {
+                Log.i("SnapPageScrollListener", "onPageScrolled = "
+                        + position
+                        + " positionOffset = "
+                        + positionOffset
+                        + " positionOffsetPixels = "
+                        + positionOffsetPixels);
+            }
+
+            @Override public void onPageSelected(int position) {
+                Log.i("SnapPageScrollListener", "onPageSelected = " + position);
+            }
+        });
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
