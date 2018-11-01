@@ -14,4 +14,13 @@
         android:textSize="48sp"
         tools:text="1"/>
 
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingTop="48dp"/>
+
 </FrameLayout>

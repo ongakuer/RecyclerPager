@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <!-- Recommend:  PageRecyclerView drag more horizontally -->
+
+    <me.relex.recyclerpager.PageRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/add_button"
@@ -17,7 +18,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="left"
         android:text="Add Page"/>
-
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/remove_button"
