@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override public void onPageSelected(int position) {
-                Log.i("SnapPageScrollListener", "onPageSelected = " + position);
+                Log.w("SnapPageScrollListener", "onPageSelected = " + position);
             }
         });
 
@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
     private class TestAdapter extends FragmentRecyclerAdapter {
 
         private int count;

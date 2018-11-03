@@ -1,0 +1,59 @@
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+group = "me.relex"
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            name 'RecyclerPager'
+            packaging 'aar'
+            description 'Using RecyclerView and SnapHelper replace ViewPager'
+            url 'https://github.com/ongakuer/RecyclerPager'
+
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                }
+            }
+
+            developers {
+                developer {
+                    id 'relex'
+                    name 'relex'
+                    email 'wwwliangxin@gmail.com'
+                }
+            }
+
+            scm {
+                url 'https://github.com/ongakuer/RecyclerPager'
+                connection 'https://github.com/ongakuer/RecyclerPager.git'
+                developerConnection 'https://github.com/ongakuer/RecyclerPager.git'
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}
+
+bintray {
+    user = bintrayUsername
+    key = bintrayApiKey
+    configurations = ['archives']
+    pkg {
+        repo = "maven"
+        name = "RecyclerPager"
+        websiteUrl = 'https://github.com/ongakuer/RecyclerPager'
+        vcsUrl = 'https://github.com/ongakuer/RecyclerPager.git'
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
