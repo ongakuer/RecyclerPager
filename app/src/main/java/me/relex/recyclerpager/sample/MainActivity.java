@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void remove() {
-            if (count == 2) {
+            if (count == 0) {
                 return;
             }
             count--;

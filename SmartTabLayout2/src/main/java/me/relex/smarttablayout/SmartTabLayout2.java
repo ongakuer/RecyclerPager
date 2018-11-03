@@ -215,7 +215,7 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
 
                     RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
                     int newCount = adapter != null ? adapter.getItemCount() : 0;
-                    int currentCount = getChildCount();
+                    int currentCount = tabStrip.getChildCount();
                     if (newCount == currentCount) {
                         // No change
                         return;
