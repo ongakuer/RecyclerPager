@@ -65,10 +65,11 @@ public abstract class FragmentRecyclerAdapter
                 holder.currentFragment.setUserVisibleHint(false);
             }
 
-            fragment.setMenuVisibility(true);
-            fragment.setUserVisibleHint(true);
             holder.currentFragment = fragment;
         }
+        
+        fragment.setMenuVisibility(true);
+        fragment.setUserVisibleHint(true);
     }
 
     /**
