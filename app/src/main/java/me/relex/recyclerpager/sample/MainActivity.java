@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import me.relex.recyclerpager.FragmentRecyclerAdapter;
 import me.relex.recyclerpager.SnapPageScrollListener;
+import me.relex.smarttablayout.SmartTabLayout2;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(recyclerView);
+
+        SmartTabLayout2 smartTabLayout2 = findViewById(R.id.tab_layout);
+        smartTabLayout2.attachToRecyclerView(recyclerView, snapHelper);
+        mAdapter.registerAdapterDataObserver(smartTabLayout2.getAdapterDataObserver());
 
         recyclerView.addOnScrollListener(new SnapPageScrollListener(snapHelper) {
             @Override public void onPageScrolled(int position, float positionOffset,
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
     private class TestAdapter extends FragmentRecyclerAdapter {
 
         private int count;
@@ -73,6 +79,10 @@ public class MainActivity extends AppCompatActivity {
             return count;
         }
 
+        @Override public CharSequence getPageTitle(int position) {
+            return "Title-" + position;
+        }
+
         public void add() {
             int position = count;
             count++;
@@ -80,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public void remove() {
-            if (count == 0) {
+            if (count == 2) {
                 return;
             }
             count--;

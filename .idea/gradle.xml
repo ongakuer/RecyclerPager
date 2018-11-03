@@ -8,6 +8,8 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/SmartTabLayout" />
+            <option value="$PROJECT_DIR$/SmartTabLayout2" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/recyclerpager" />
           </set>

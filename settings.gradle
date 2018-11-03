@@ -1,1 +1,1 @@
-include ':app', ':recyclerpager'
+include ':app', ':recyclerpager', ':SmartTabLayout', ':SmartTabLayout2'
