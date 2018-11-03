@@ -37,3 +37,7 @@ Making the widget extendable
 ## SmartTabLayout2
 
 The New SmartTabLayout works with RecyclerView and SnapHelper
+
+
+
+![RecyclerPager](/demo.gif)
