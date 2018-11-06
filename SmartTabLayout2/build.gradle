@@ -19,6 +19,6 @@ android {
 }
 
 dependencies {
-    implementation "me.relex:recyclerpager:1.0.1"
+    implementation "me.relex:recyclerpager:1.0.3"
     api project(':SmartTabLayout')
 }
