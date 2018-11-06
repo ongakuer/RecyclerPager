@@ -20,7 +20,6 @@ import android.content.Context;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -141,12 +140,6 @@ public class SmartTabLayout extends BaseSmartTabLayout {
             if ((tabStripChildCount == 0) || (position < 0) || (position >= tabStripChildCount)) {
                 return;
             }
-
-            Log.e("SmartTabLayout", "onPageScrolled  position = "
-                    + position
-                    + " ; "
-                    + "positionOffset = "
-                    + positionOffset);
 
             tabStrip.onViewPagerPageChanged(position, positionOffset);
 
