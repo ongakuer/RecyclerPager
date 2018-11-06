@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 import com.ogaclejapan.smarttablayout.BaseSmartTabLayout;
 import me.relex.recyclerpager.PageRecyclerAdapter;
+import me.relex.recyclerpager.SnapPageScrollListener;
 
 /**
  * To be used with RecyclerView to provide a tab indicator component which give constant feedback as
@@ -36,6 +37,7 @@ import me.relex.recyclerpager.PageRecyclerAdapter;
  */
 public class SmartTabLayout2 extends BaseSmartTabLayout {
 
+    private InternalOnScrollListener mInternalOnScrollListener;
     private RecyclerView mRecyclerView;
     private SnapHelper mSnapHelper;
 
@@ -55,8 +57,7 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
             @NonNull SnapHelper snapHelper) {
         mRecyclerView = recyclerView;
         mSnapHelper = snapHelper;
-
-        mRecyclerView.removeOnScrollListener(mInternalOnScrollListener);
+        mInternalOnScrollListener = new InternalOnScrollListener(snapHelper);
         mRecyclerView.addOnScrollListener(mInternalOnScrollListener);
         populateTabStrip();
     }
@@ -123,87 +124,26 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
         }
     }
 
-    private class InternalOnScrollListener extends RecyclerView.OnScrollListener {
+    private class InternalOnScrollListener extends SnapPageScrollListener {
 
-        int currentPosition = RecyclerView.NO_POSITION;
-
-        @Override public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-            View snapView = null;
-            int position = RecyclerView.NO_POSITION;
-            if (layoutManager != null) {
-                snapView = mSnapHelper.findSnapView(layoutManager);
-                if (snapView != null) {
-                    position = layoutManager.getPosition(snapView);
-                }
-            }
-            if (position == RecyclerView.NO_POSITION) {
-                return;
-            }
-
-            if (currentPosition != position) {
-                currentPosition = position;
-                for (int i = 0, size = tabStrip.getChildCount(); i < size; i++) {
-                    tabStrip.getChildAt(i).setSelected(position == i);
-                }
-            }
-
-            int[] snapViewDistance =
-                    mSnapHelper.calculateDistanceToFinalSnap(layoutManager, snapView);
-            float positionOffset = 0f;
-            if (snapViewDistance != null) {
-                if (layoutManager.canScrollHorizontally()) {
-                    positionOffset = (float) snapViewDistance[0] / snapView.getWidth();
-                } else {
-                    positionOffset = (float) snapViewDistance[1] / snapView.getHeight();
-                }
-            }
-
-            int targetPosition;
-            float targetPositionOffset;
-            if (positionOffset <= 0) {
-                targetPosition = position;
-                targetPositionOffset = Math.abs(positionOffset);
-            } else {
-                targetPosition = position - 1;
-                View lastView = layoutManager.findViewByPosition(targetPosition);
-                int[] lastViewDistance = new int[2];
-                if (lastView != null) {
-                    lastViewDistance =
-                            mSnapHelper.calculateDistanceToFinalSnap(layoutManager, lastView);
-                }
-                float lastViewPositionOffset = 0f;
-                if (lastViewDistance != null) {
-                    if (layoutManager.canScrollHorizontally()) {
-                        lastViewPositionOffset = (float) lastViewDistance[0] / snapView.getWidth();
-                    } else {
-                        lastViewPositionOffset = (float) lastViewDistance[1] / snapView.getHeight();
-                    }
-                }
-                targetPositionOffset = Math.abs(lastViewPositionOffset);
-            }
-
-            tabStrip.onViewPagerPageChanged(targetPosition, targetPositionOffset);
-            scrollToTab(targetPosition, targetPositionOffset);
+        InternalOnScrollListener(SnapHelper snapHelper) {
+            super(snapHelper);
         }
 
         @Override
-        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            if (currentPosition == RecyclerView.NO_POSITION) {
-                return;
-            }
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            tabStrip.onViewPagerPageChanged(position, positionOffset);
+            scrollToTab(position, positionOffset);
+        }
 
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                tabStrip.onViewPagerPageChanged(currentPosition, 0f);
-                scrollToTab(currentPosition, 0);
-            }
+        @Override public void onPageSelected(int position) {
+            super.onPageSelected(position);
+
+            tabStrip.onViewPagerPageChanged(position, 0f);
+            scrollToTab(position, 0);
         }
     }
-
-    private final InternalOnScrollListener mInternalOnScrollListener =
-            new InternalOnScrollListener();
 
     private final RecyclerView.AdapterDataObserver mAdapterDataObserver =
             new RecyclerView.AdapterDataObserver() {
