@@ -38,7 +38,7 @@ public abstract class FragmentRecyclerAdapter
     }
 
     /**
-     * Attach Fragment && Fragment setUserVisibleHint true
+     * Attach Fragment and Fragment setUserVisibleHint true
      */
     @Override public void onViewAttachedToWindow(@NonNull FragmentViewHolder holder) {
         super.onViewAttachedToWindow(holder);
@@ -60,16 +60,18 @@ public abstract class FragmentRecyclerAdapter
 
             fragmentTransaction.commitNowAllowingStateLoss();
 
-            if (holder.currentFragment != null) {
+            if (holder.currentFragment != null && holder.currentFragment.getUserVisibleHint()) {
                 holder.currentFragment.setMenuVisibility(false);
                 holder.currentFragment.setUserVisibleHint(false);
             }
 
             holder.currentFragment = fragment;
         }
-        
-        fragment.setMenuVisibility(true);
-        fragment.setUserVisibleHint(true);
+
+        if (!fragment.getUserVisibleHint()) {
+            fragment.setMenuVisibility(true);
+            fragment.setUserVisibleHint(true);
+        }
     }
 
     /**
@@ -77,7 +79,7 @@ public abstract class FragmentRecyclerAdapter
      */
     @Override public void onViewDetachedFromWindow(@NonNull FragmentViewHolder holder) {
         super.onViewDetachedFromWindow(holder);
-        if (holder.currentFragment != null) {
+        if (holder.currentFragment != null && holder.currentFragment.getUserVisibleHint()) {
             holder.currentFragment.setMenuVisibility(false);
             holder.currentFragment.setUserVisibleHint(false);
         }

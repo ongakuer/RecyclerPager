@@ -1,5 +1,6 @@
 package me.relex.recyclerpager;
 
+import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -82,8 +83,8 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
         onPageScrolled(targetPosition, targetPositionOffset, targetPositionOffsetPixels);
     }
 
-    @Override
-    public final void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+    @CallSuper @Override
+    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
         if (currentPosition == RecyclerView.NO_POSITION) {
             return;
