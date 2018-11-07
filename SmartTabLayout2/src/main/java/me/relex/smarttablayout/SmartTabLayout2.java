@@ -1,7 +1,6 @@
 package me.relex.smarttablayout;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -20,7 +19,7 @@ import me.relex.recyclerpager.SnapPageScrollListener;
  * To use the component, simply add it to your view hierarchy. Then in your
  * {@link android.app.Activity} or {@link android.app.Fragment}, {@link
  * android.support.v4.app.Fragment} call
- * {@link #attachToRecyclerView(RecyclerView, SnapHelper)} providing it the ViewPager this layout
+ * {@link #attachToRecyclerView(RecyclerView)} providing it the ViewPager this layout
  * is being used for.
  * <p>
  * The colors can be customized in two ways. The first and simplest is to provide an array of
@@ -37,9 +36,10 @@ import me.relex.recyclerpager.SnapPageScrollListener;
  */
 public class SmartTabLayout2 extends BaseSmartTabLayout {
 
-    private InternalOnScrollListener mInternalOnScrollListener;
-    private RecyclerView mRecyclerView;
-    private SnapHelper mSnapHelper;
+    private final InternalOnScrollListener mInternalOnScrollListener =
+            new InternalOnScrollListener();
+    @Nullable private RecyclerView mRecyclerView;
+    @Nullable private SnapHelper mSnapHelper;
 
     public SmartTabLayout2(Context context) {
         super(context);
@@ -53,17 +53,27 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
         super(context, attrs, defStyle);
     }
 
-    public void attachToRecyclerView(@NonNull RecyclerView recyclerView,
-            @NonNull SnapHelper snapHelper) {
-        mRecyclerView = recyclerView;
-        mSnapHelper = snapHelper;
-        mInternalOnScrollListener = new InternalOnScrollListener(snapHelper);
-        mRecyclerView.addOnScrollListener(mInternalOnScrollListener);
-        populateTabStrip();
+    public void attachToRecyclerView(@Nullable RecyclerView recyclerView) {
+        if (mRecyclerView != recyclerView) {
+            if (mRecyclerView != null) {
+                mRecyclerView.removeOnScrollListener(mInternalOnScrollListener);
+            }
+            mRecyclerView = recyclerView;
+            if (mRecyclerView != null) {
+                if (mSnapHelper == null) {
+                    RecyclerView.OnFlingListener flingListener = recyclerView.getOnFlingListener();
+                    if (flingListener instanceof SnapHelper) {
+                        mSnapHelper = (SnapHelper) flingListener;
+                    }
+                }
+                recyclerView.addOnScrollListener(mInternalOnScrollListener);
+            }
+            populateTabStrip();
+        }
     }
 
     public int getSnapPosition(@Nullable RecyclerView.LayoutManager layoutManager) {
-        if (layoutManager == null) {
+        if (layoutManager == null || mSnapHelper == null) {
             return RecyclerView.NO_POSITION;
         }
         View snapView = mSnapHelper.findSnapView(layoutManager);
@@ -75,6 +85,10 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
 
     @Override protected void populateTabStrip() {
         tabStrip.removeAllViews();
+        if (mRecyclerView == null) {
+            return;
+        }
+
         RecyclerView.Adapter adapter = mRecyclerView.getAdapter();
         if (!(adapter instanceof PageRecyclerAdapter)) {
             return;
@@ -126,22 +140,21 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
 
     private class InternalOnScrollListener extends SnapPageScrollListener {
 
-        InternalOnScrollListener(SnapHelper snapHelper) {
-            super(snapHelper);
-        }
-
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             super.onPageScrolled(position, positionOffset, positionOffsetPixels);
+            if (mSnapHelper == null) {
+                mSnapHelper = snapHelper;
+            }
             tabStrip.onViewPagerPageChanged(position, positionOffset);
             scrollToTab(position, positionOffset);
         }
 
         @Override public void onPageSelected(int position) {
             super.onPageSelected(position);
-
-            tabStrip.onViewPagerPageChanged(position, 0f);
-            scrollToTab(position, 0);
+            for (int i = 0, size = tabStrip.getChildCount(); i < size; i++) {
+                tabStrip.getChildAt(i).setSelected(position == i);
+            }
         }
     }
 
