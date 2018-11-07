@@ -5,16 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
-public abstract class FragmentRecyclerAdapter
-        extends PageRecyclerAdapter<FragmentRecyclerAdapter.FragmentViewHolder> {
+public abstract class FragmentRecyclerAdapter extends PageRecyclerAdapter<FragmentViewHolder> {
 
+    protected final FragmentManager mFragmentManager;
     private final int mBaseContainerId;
-    private final FragmentManager mFragmentManager;
 
     public FragmentRecyclerAdapter(FragmentManager fm) {
         mFragmentManager = fm;
@@ -23,11 +19,7 @@ public abstract class FragmentRecyclerAdapter
 
     @NonNull @Override
     public FragmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        FrameLayout frameLayout = new FrameLayout(parent.getContext());
-        frameLayout.setLayoutParams(
-                new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                        RecyclerView.LayoutParams.MATCH_PARENT));
-        return new FragmentViewHolder(frameLayout);
+        return FragmentViewHolder.createViewHolder(parent);
     }
 
     /**
@@ -38,10 +30,9 @@ public abstract class FragmentRecyclerAdapter
     }
 
     /**
-     * Attach Fragment and Fragment setUserVisibleHint true
+     * Attach Fragment, Fragment setUserVisibleHint true
      */
     @Override public void onViewAttachedToWindow(@NonNull FragmentViewHolder holder) {
-        super.onViewAttachedToWindow(holder);
 
         String name = makeFragmentName(holder.itemView.getId(), holder.getAdapterPosition());
         Fragment fragment = mFragmentManager.findFragmentByTag(name);
@@ -64,7 +55,6 @@ public abstract class FragmentRecyclerAdapter
                 holder.currentFragment.setMenuVisibility(false);
                 holder.currentFragment.setUserVisibleHint(false);
             }
-
             holder.currentFragment = fragment;
         }
 
@@ -78,7 +68,6 @@ public abstract class FragmentRecyclerAdapter
      * Fragment setUserVisibleHint false
      */
     @Override public void onViewDetachedFromWindow(@NonNull FragmentViewHolder holder) {
-        super.onViewDetachedFromWindow(holder);
         if (holder.currentFragment != null && holder.currentFragment.getUserVisibleHint()) {
             holder.currentFragment.setMenuVisibility(false);
             holder.currentFragment.setUserVisibleHint(false);
@@ -89,8 +78,6 @@ public abstract class FragmentRecyclerAdapter
      * Detach Fragment
      */
     @Override public void onViewRecycled(@NonNull FragmentViewHolder holder) {
-        super.onViewRecycled(holder);
-
         if (holder.currentFragment != null) {
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             fragmentTransaction.detach(holder.currentFragment);
@@ -99,20 +86,13 @@ public abstract class FragmentRecyclerAdapter
         holder.currentFragment = null;
     }
 
-    private static String makeFragmentName(int viewId, int position) {
+    static String makeFragmentName(int viewId, int position) {
         return "fragment:adapter:" + viewId + ":" + position;
     }
 
     /**
-     * Return the Fragment associated with a specified position.
+     * @param position item position
+     * @return Return the Fragment associated with a specified position.
      */
     public abstract Fragment getItem(int position);
-
-    class FragmentViewHolder extends RecyclerView.ViewHolder {
-        Fragment currentFragment;
-
-        FragmentViewHolder(@NonNull View itemView) {
-            super(itemView);
-        }
-    }
 }

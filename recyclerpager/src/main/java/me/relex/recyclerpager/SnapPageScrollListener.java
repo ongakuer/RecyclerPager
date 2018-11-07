@@ -2,6 +2,7 @@ package me.relex.recyclerpager;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.view.View;
@@ -10,19 +11,22 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
 
     public int currentPosition = RecyclerView.NO_POSITION;
 
-    private final SnapHelper mSnapHelper;
-
-    public SnapPageScrollListener(SnapHelper snapHelper) {
-        mSnapHelper = snapHelper;
-    }
+    @Nullable protected SnapHelper snapHelper;
 
     @Override public final void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        if (snapHelper == null) {
+            RecyclerView.OnFlingListener flingListener = recyclerView.getOnFlingListener();
+            if (flingListener instanceof SnapHelper) {
+                snapHelper = (SnapHelper) flingListener;
+            }
+        }
+
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         View snapView = null;
         int position = RecyclerView.NO_POSITION;
         if (layoutManager != null) {
-            snapView = mSnapHelper.findSnapView(layoutManager);
+            snapView = snapHelper.findSnapView(layoutManager);
             if (snapView != null) {
                 position = layoutManager.getPosition(snapView);
             }
@@ -36,7 +40,7 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
             onPageSelected(position);
         }
 
-        int[] snapViewDistance = mSnapHelper.calculateDistanceToFinalSnap(layoutManager, snapView);
+        int[] snapViewDistance = snapHelper.calculateDistanceToFinalSnap(layoutManager, snapView);
         float positionOffset = 0f;
         int positionOffsetPixels = 0;
         if (snapViewDistance != null) {
@@ -63,7 +67,7 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
             int[] lastViewDistance = new int[2];
             if (lastView != null) {
                 lastViewDistance =
-                        mSnapHelper.calculateDistanceToFinalSnap(layoutManager, lastView);
+                        snapHelper.calculateDistanceToFinalSnap(layoutManager, lastView);
             }
             float lastViewPositionOffset = 0f;
             int lastViewPositionOffsetPixels = 0;
