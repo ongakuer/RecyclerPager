@@ -19,6 +19,9 @@ android {
 }
 
 dependencies {
-    implementation "me.relex:recyclerpager:1.0.3"
+    implementation 'com.android.support:support-annotations:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:support-fragment:28.0.0'
+    api project(':recyclerpager')
     api project(':SmartTabLayout')
 }

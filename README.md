@@ -18,7 +18,7 @@ This library provides some useful classes for RecyclerView.
 
 ```groovy
 dependencies {
-    compile 'me.relex:recyclerpager:1.0.3'
+    compile 'me.relex:recyclerpager:1.0.4'
 }
 ```
 

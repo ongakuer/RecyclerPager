@@ -30,10 +30,10 @@ public class MainActivity extends AppCompatActivity {
         snapHelper.attachToRecyclerView(recyclerView);
 
         SmartTabLayout2 smartTabLayout2 = findViewById(R.id.tab_layout);
-        smartTabLayout2.attachToRecyclerView(recyclerView, snapHelper);
+        smartTabLayout2.attachToRecyclerView(recyclerView);
         mAdapter.registerAdapterDataObserver(smartTabLayout2.getAdapterDataObserver());
 
-        recyclerView.addOnScrollListener(new SnapPageScrollListener(snapHelper) {
+        recyclerView.addOnScrollListener(new SnapPageScrollListener() {
             @Override public void onPageScrolled(int position, float positionOffset,
                     int positionOffsetPixels) {
                 Log.i("SnapPageScrollListener", "onPageScrolled = "
