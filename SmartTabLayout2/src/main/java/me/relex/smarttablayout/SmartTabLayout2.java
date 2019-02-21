@@ -146,8 +146,8 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
             if (mSnapHelper == null) {
                 mSnapHelper = snapHelper;
             }
-            tabStrip.onViewPagerPageChanged(position, positionOffset);
             scrollToTab(position, positionOffset);
+            tabStrip.onViewPagerPageChanged(position, positionOffset);
         }
 
         @Override public void onPageSelected(int position) {
@@ -172,13 +172,17 @@ public class SmartTabLayout2 extends BaseSmartTabLayout {
                     if (newCount == currentCount) {
                         // No change
                         return;
-                    } else if (mInternalOnScrollListener.currentPosition < newCount) {
+                    }
+
+                    populateTabStrip();
+                    if (mInternalOnScrollListener.currentPosition < newCount) {
                         mInternalOnScrollListener.currentPosition =
                                 getSnapPosition(mRecyclerView.getLayoutManager());
+                        mInternalOnScrollListener.onPageScrolled(
+                                mInternalOnScrollListener.currentPosition, 0, 0);
                     } else {
                         mInternalOnScrollListener.currentPosition = RecyclerView.NO_POSITION;
                     }
-                    populateTabStrip();
                 }
 
                 @Override public void onItemRangeChanged(int positionStart, int itemCount) {

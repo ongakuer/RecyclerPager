@@ -1,6 +1,7 @@
 package me.relex.recyclerpager.sample;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -9,7 +10,9 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import me.relex.recyclerpager.FragmentRecyclerAdapter;
+import me.relex.recyclerpager.FragmentViewHolder;
 import me.relex.recyclerpager.SnapPageScrollListener;
 import me.relex.smarttablayout.SmartTabLayout2;
 
@@ -21,9 +24,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        LinearLayoutManager linearLayoutManager =
+                new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false) {
+
+                    @Override public void stopIgnoringView(@NonNull View view) {
+                        super.stopIgnoringView(view);
+                    }
+
+                    @Override public void ignoreView(@NonNull View view) {
+                        super.ignoreView(view);
+                    }
+                };
+
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(
-                new LinearLayoutManager(this, RecyclerView.HORIZONTAL, false));
+        recyclerView.setLayoutManager(linearLayoutManager);
+
         mAdapter = new TestAdapter(getSupportFragmentManager());
         recyclerView.setAdapter(mAdapter);
         PagerSnapHelper snapHelper = new PagerSnapHelper();
@@ -71,6 +86,12 @@ public class MainActivity extends AppCompatActivity {
             count = 3;
         }
 
+        @NonNull @Override
+        public FragmentViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            FragmentViewHolder vh = super.onCreateViewHolder(parent, viewType);
+            return vh;
+        }
+
         @Override public Fragment getItem(int position) {
             return PageFragment.newInstance(position);
         }
@@ -81,6 +102,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override public CharSequence getPageTitle(int position) {
             return "Title-" + position;
+        }
+
+        @Override public void onViewAttachedToWindow(@NonNull FragmentViewHolder holder) {
+            super.onViewAttachedToWindow(holder);
+            Log.e("MainActivity", "onViewAttachedToWindow = " + holder.getLayoutPosition());
+        }
+
+        @Override public void onViewDetachedFromWindow(@NonNull FragmentViewHolder holder) {
+            super.onViewDetachedFromWindow(holder);
+            Log.e("MainActivity", "onViewDetachedFromWindow " + holder.getLayoutPosition());
+        }
+
+        @Override public void onViewRecycled(@NonNull FragmentViewHolder holder) {
+            super.onViewRecycled(holder);
+            Log.e("MainActivity", "onViewRecycled = " + holder.getLayoutPosition());
         }
 
         public void add() {

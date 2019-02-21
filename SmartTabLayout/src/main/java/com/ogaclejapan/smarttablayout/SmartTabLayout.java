@@ -31,7 +31,7 @@ import android.widget.LinearLayout;
  * To use the component, simply add it to your view hierarchy. Then in your
  * {@link android.app.Activity} or {@link android.app.Fragment}, {@link
  * android.support.v4.app.Fragment} call
- * {@link #setViewPager(android.support.v4.view.ViewPager)} providing it the ViewPager this layout
+ * {@link #setViewPager(ViewPager)} providing it the ViewPager this layout
  * is being used for.
  * <p>
  * The colors can be customized in two ways. The first and simplest is to provide an array of
@@ -77,6 +77,8 @@ public class SmartTabLayout extends BaseSmartTabLayout {
     /**
      * Sets the associated view pager. Note that the assumption here is that the pager content
      * (number of tabs and tab titles) does not change after this call has been made.
+     *
+     * @param viewPager viewPager
      */
     public void setViewPager(ViewPager viewPager) {
         tabStrip.removeAllViews();
@@ -124,6 +126,7 @@ public class SmartTabLayout extends BaseSmartTabLayout {
      * required to set any {@link ViewPager.OnPageChangeListener} through this method. This is so
      * that the layout can update it's scroll position correctly.
      *
+     * @param listener listener
      * @see ViewPager#setOnPageChangeListener(ViewPager.OnPageChangeListener)
      */
     public void setOnPageChangeListener(ViewPager.OnPageChangeListener listener) {
@@ -141,9 +144,9 @@ public class SmartTabLayout extends BaseSmartTabLayout {
                 return;
             }
 
-            tabStrip.onViewPagerPageChanged(position, positionOffset);
-
             scrollToTab(position, positionOffset);
+
+            tabStrip.onViewPagerPageChanged(position, positionOffset);
 
             if (viewPagerPageChangeListener != null) {
                 viewPagerPageChangeListener.onPageScrolled(position, positionOffset,
@@ -161,8 +164,8 @@ public class SmartTabLayout extends BaseSmartTabLayout {
 
         @Override public void onPageSelected(int position) {
             if (scrollState == ViewPager.SCROLL_STATE_IDLE) {
-                tabStrip.onViewPagerPageChanged(position, 0f);
                 scrollToTab(position, 0);
+                tabStrip.onViewPagerPageChanged(position, 0f);
             }
 
             for (int i = 0, size = tabStrip.getChildCount(); i < size; i++) {

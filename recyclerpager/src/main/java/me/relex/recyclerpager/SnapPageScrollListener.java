@@ -15,14 +15,13 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
 
     @Override public final void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if (snapHelper == null) {
             RecyclerView.OnFlingListener flingListener = recyclerView.getOnFlingListener();
             if (flingListener instanceof SnapHelper) {
                 snapHelper = (SnapHelper) flingListener;
             }
         }
-
-        RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         View snapView = null;
         int position = RecyclerView.NO_POSITION;
         if (layoutManager != null) {
@@ -66,8 +65,7 @@ public abstract class SnapPageScrollListener extends RecyclerView.OnScrollListen
             View lastView = layoutManager.findViewByPosition(targetPosition);
             int[] lastViewDistance = new int[2];
             if (lastView != null) {
-                lastViewDistance =
-                        snapHelper.calculateDistanceToFinalSnap(layoutManager, lastView);
+                lastViewDistance = snapHelper.calculateDistanceToFinalSnap(layoutManager, lastView);
             }
             float lastViewPositionOffset = 0f;
             int lastViewPositionOffsetPixels = 0;

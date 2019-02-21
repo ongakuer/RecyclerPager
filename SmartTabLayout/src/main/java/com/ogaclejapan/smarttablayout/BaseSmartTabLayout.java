@@ -190,6 +190,8 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
      * If you only require simple customisation then you can use
      * {@link #setSelectedIndicatorColors(int...)} and {@link #setDividerColors(int...)} to achieve
      * similar effects.
+     *
+     * @param tabColorizer tabColorizer
      */
     public void setCustomTabColorizer(TabColorizer tabColorizer) {
         tabStrip.setCustomTabColorizer(tabColorizer);
@@ -215,6 +217,8 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
 
     /**
      * Set the same weight for tab
+     *
+     * @param distributeEvenly distributeEvenly
      */
     public void setDistributeEvenly(boolean distributeEvenly) {
         this.distributeEvenly = distributeEvenly;
@@ -223,6 +227,8 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
     /**
      * Sets the colors to be used for indicating the selected tab. These colors are treated as a
      * circular array. Providing one color will mean that all tabs are indicated with the same color.
+     *
+     * @param colors colors
      */
     public void setSelectedIndicatorColors(int... colors) {
         tabStrip.setSelectedIndicatorColors(colors);
@@ -231,6 +237,8 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
     /**
      * Sets the colors to be used for tab dividers. These colors are treated as a circular array.
      * Providing one color will mean that all tabs are indicated with the same color.
+     *
+     * @param colors colors
      */
     public void setDividerColors(int... colors) {
         tabStrip.setDividerColors(colors);
@@ -284,10 +292,6 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
         return tabStrip.getChildAt(position);
     }
 
-    /**
-     * Create a default view to be used for tabs. This is called if a custom tab view is not set via
-     * {@link #setCustomTabView(int, int)}.
-     */
     protected TextView createDefaultTabView(CharSequence title) {
         TextView textView = new TextView(getContext());
         textView.setGravity(Gravity.CENTER);
@@ -414,11 +418,13 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
     public interface TabColorizer {
 
         /**
+         * @param position position
          * @return return the color of the indicator used when {@code position} is selected.
          */
         int getIndicatorColor(int position);
 
         /**
+         * @param position position
          * @return return the color of the divider drawn to the right of {@code position}.
          */
         int getDividerColor(int position);
@@ -457,9 +463,6 @@ public abstract class BaseSmartTabLayout extends HorizontalScrollView {
      */
     public interface TabProvider {
 
-        /**
-         * @return Return the View for the Tabs
-         */
         View createTabView(ViewGroup container, int position, @Nullable CharSequence pageTitle);
     }
 

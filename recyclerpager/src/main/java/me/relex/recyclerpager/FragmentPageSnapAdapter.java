@@ -35,7 +35,7 @@ public abstract class FragmentPageSnapAdapter extends FragmentRecyclerAdapter {
 
     private class InternalScrollListener extends RecyclerView.OnScrollListener {
 
-        @Nullable private Fragment mCurrentFragment;
+        @Nullable private String mCurrentFragmentTag;
 
         @Override public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             // scroll to position
@@ -74,20 +74,24 @@ public abstract class FragmentPageSnapAdapter extends FragmentRecyclerAdapter {
             if (viewHolder instanceof FragmentViewHolder) {
                 fragment = ((FragmentViewHolder) viewHolder).currentFragment;
             }
-            if (fragment == null) {
+
+            String fragmentTag;
+            if (fragment == null || (fragmentTag = fragment.getTag()) == null) {
                 return;
             }
 
-            if (fragment != mCurrentFragment) {
-                if (mCurrentFragment != null && mCurrentFragment.getUserVisibleHint()) {
-                    mCurrentFragment.setMenuVisibility(false);
-                    mCurrentFragment.setUserVisibleHint(false);
+            if (!fragmentTag.equals(mCurrentFragmentTag)) {
+                Fragment currentFragment = mFragmentManager.findFragmentByTag(mCurrentFragmentTag);
+                if (currentFragment != null && currentFragment.getUserVisibleHint()) {
+                    currentFragment.setMenuVisibility(false);
+                    currentFragment.setUserVisibleHint(false);
                 }
+
                 if (!fragment.getUserVisibleHint()) {
                     fragment.setMenuVisibility(true);
                     fragment.setUserVisibleHint(true);
                 }
-                mCurrentFragment = fragment;
+                mCurrentFragmentTag = fragmentTag;
             }
         }
     }

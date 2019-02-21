@@ -8,7 +8,6 @@ import android.support.v4.view.ViewCompat;
 import android.view.ViewGroup;
 
 public abstract class FragmentRecyclerAdapter extends PageRecyclerAdapter<FragmentViewHolder> {
-
     protected final FragmentManager mFragmentManager;
     private final int mBaseContainerId;
 
@@ -30,7 +29,7 @@ public abstract class FragmentRecyclerAdapter extends PageRecyclerAdapter<Fragme
     }
 
     /**
-     * Attach Fragment, Fragment setUserVisibleHint true
+     * Attach Fragment
      */
     @Override public void onViewAttachedToWindow(@NonNull FragmentViewHolder holder) {
 
@@ -48,30 +47,35 @@ public abstract class FragmentRecyclerAdapter extends PageRecyclerAdapter<Fragme
                 fragment = getItem(holder.getAdapterPosition());
                 fragmentTransaction.add(holder.itemView.getId(), fragment, name);
             }
-
             fragmentTransaction.commitNowAllowingStateLoss();
 
             if (holder.currentFragment != null && holder.currentFragment.getUserVisibleHint()) {
                 holder.currentFragment.setMenuVisibility(false);
                 holder.currentFragment.setUserVisibleHint(false);
             }
-            holder.currentFragment = fragment;
-        }
 
-        if (!fragment.getUserVisibleHint()) {
-            fragment.setMenuVisibility(true);
-            fragment.setUserVisibleHint(true);
+            holder.currentFragment = fragment;
+            if (!fragment.getUserVisibleHint()) {
+                fragment.setMenuVisibility(true);
+                fragment.setUserVisibleHint(true);
+            }
         }
     }
 
     /**
-     * Fragment setUserVisibleHint false
+     * Detach Fragment
      */
     @Override public void onViewDetachedFromWindow(@NonNull FragmentViewHolder holder) {
-        if (holder.currentFragment != null && holder.currentFragment.getUserVisibleHint()) {
-            holder.currentFragment.setMenuVisibility(false);
-            holder.currentFragment.setUserVisibleHint(false);
+        if (holder.currentFragment != null) {
+            if (holder.currentFragment.getUserVisibleHint()) {
+                holder.currentFragment.setMenuVisibility(false);
+                holder.currentFragment.setUserVisibleHint(false);
+            }
+            FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+            fragmentTransaction.detach(holder.currentFragment);
+            fragmentTransaction.commitNowAllowingStateLoss();
         }
+        holder.currentFragment = null;
     }
 
     /**
@@ -79,6 +83,10 @@ public abstract class FragmentRecyclerAdapter extends PageRecyclerAdapter<Fragme
      */
     @Override public void onViewRecycled(@NonNull FragmentViewHolder holder) {
         if (holder.currentFragment != null) {
+            if (holder.currentFragment.getUserVisibleHint()) {
+                holder.currentFragment.setMenuVisibility(false);
+                holder.currentFragment.setUserVisibleHint(false);
+            }
             FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
             fragmentTransaction.detach(holder.currentFragment);
             fragmentTransaction.commitNowAllowingStateLoss();

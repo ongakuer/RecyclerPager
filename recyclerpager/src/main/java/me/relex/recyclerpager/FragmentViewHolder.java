@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-class FragmentViewHolder extends RecyclerView.ViewHolder {
+public class FragmentViewHolder extends RecyclerView.ViewHolder {
     Fragment currentFragment;
 
     static FragmentViewHolder createViewHolder(@NonNull ViewGroup parent) {
